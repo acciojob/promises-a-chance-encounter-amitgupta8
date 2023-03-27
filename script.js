@@ -1,38 +1,30 @@
-//your JS code here. If required.
-// Create an array of 5 promises
-const promises = Array.from({ length: 5 }, () =>
-  new Promise((resolve, reject) => {
-    // Generate a random number between 0 and 1
-    const randomNumber = Math.random();
-    if (randomNumber < 0.5) {
-      // Reject with an error 50% of the time
-      reject(new Error('Promise rejected'));
-    } else {
-      // Resolve with a random number between 1 and 10 the other 50% of the time
-      resolve(Math.floor(Math.random() * 10) + 1);
-    }
-  })
-);
-
-// Wait for all promises to settle
-Promise.all(promises)
-  .then((results) => {
-    // Log the array of results or errors
-    results.forEach((result, index) => {
-      if (result instanceof Error) {
-        console.log(`Promise ${index + 1} rejected with error`);
-        const outputDiv = document.getElementById('output');
-        outputDiv.innerHTML += `<p>Promise ${index + 1} rejected with error</p>`;
-      } else {
-        console.log(`Promise ${index + 1} resolved with ${result}`);
-        const outputDiv = document.getElementById('output');
-        outputDiv.innerHTML += `<p>Promise ${index + 1} resolved with ${result}</p>`;
-      }
-    });
-  })
-  .catch((error) => {
-    console.log(`Promise.all rejected with error: ${error.message}`);
-    const outputDiv = document.getElementById('output');
-    outputDiv.innerHTML = `<p>Promise.all rejected with error: ${error.message}</p>`;
-  });
-
+const promises = Array.from({length: 5}, (_, i) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            const rand = Math.random();
+            if (rand < 0.5) {
+              resolve(Math.floor(Math.random() * 10) + 1);
+            } else {
+              reject(`Promise ${i+1} rejected with error`);
+            }
+          }, Math.random() * 2000);
+        });
+      });
+      
+      Promise.all(promises)
+        .then(results => {
+          const outputDiv = document.getElementById("output");
+          results.forEach((result, i) => {
+            const p = document.createElement("p");
+            p.textContent = `${i+1}: ${result}`;
+            outputDiv.appendChild(p);
+          });
+        })
+        .catch(errors => {
+          const outputDiv = document.getElementById("output");
+          errors.forEach((error, i) => {
+            const p = document.createElement("p");
+            p.textContent = error;
+            outputDiv.appendChild(p);
+          });
+        });
